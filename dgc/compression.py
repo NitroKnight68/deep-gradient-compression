@@ -52,10 +52,12 @@ class DGCCompressor:
         self.resample = resample
 
         self.attributes = {}
+        self.compression_numerator = 0
+        self.compression_denominator = 0
 
     def initialize(self, named_parameters):
         if hvd.rank() == 0:
-            print("=> initializing dgc compressor")
+            print("=> Initializing DGC compressor")
         for name, param in named_parameters:
             if torch.is_tensor(param):
                 numel = param.numel()
@@ -102,7 +104,7 @@ class DGCCompressor:
             compress_ratio = self.base_compress_ratio
         if compress_ratio != self.compress_ratio:
             if hvd.rank() == 0:
-                print(f'update compress ratio: {compress_ratio}')
+                print(f'Update compress ratio: {compress_ratio}')
             self.compress_ratio = compress_ratio
             self.initialize(self.attributes.items())
 
@@ -153,24 +155,43 @@ class DGCCompressor:
         return values, indices, numel, shape, num_selects
 
     def compress(self, tensor, name):
+        original_numel = tensor.numel()
         if self.compress_ratio < 1.0 and name in self.attributes:
             # compress
             tensor_compensated = self.memory.compensate(
                 tensor, name, accumulate=True)
             values, indices, numel, shape, num_selects = \
                 self._sparsify(tensor_compensated, name)
+
             self.memory.update(name, (indices, ))
             indices = indices.view(-1, 1)
             values = values.view(-1, 1)
 
+            # Print compression info
+            compressed_size = values.numel() + indices.numel()
+            print(f'[DGC Compress] Layer: {name}')
+            print(f'  Original tensor: {original_numel} elements, shape: {tensor.shape}')
+            print(f'  Compressed: {compressed_size} elements '
+                f'(values: {values.numel()}, indices: {indices.numel()})')
+            print(f'  Compression ratio: {compressed_size/original_numel:.4f}')
+            
+            self.compression_numerator += compressed_size
+            self.compression_denominator += original_numel
+            print(f'>>>>>>>>>>>>>>>>>>>>{self.compression_numerator / self.compression_denominator}<<<<<<<<<<<<<<<')
+
             ctx = (name, numel, shape, values.dtype, indices.dtype,
-                   tensor.data.view(numel))
+                tensor.data.view(numel))
             if self.fp16_values and values.dtype.is_floating_point:
                 values = values.type(torch.float16)
             if self.int32_indices and not indices.dtype.is_floating_point:
                 indices = indices.type(torch.int32)
             return (values, indices), ctx
         else:
+            # Not compressing
+            print(f'[DGC Compress] Layer: {name} not compressed (ratio = 1.0 or not in attributes)')
+            self.compression_numerator += original_numel
+            self.compression_denominator += original_numel
+            print(f'>>>>>>>>>>>>>>>>>>>>{self.compression_numerator / self.compression_denominator}<<<<<<<<<<<<<<<')
             ctx = (name, None, None, tensor.dtype, None, None)
             if self.fp16_values and tensor.dtype.is_floating_point:
                 tensor = tensor.type(torch.float16)
@@ -179,9 +200,9 @@ class DGCCompressor:
     def decompress(self, tensor, ctx):
         name, numel, shape, vdtype, idtype, grad = ctx
         if self.compress_ratio < 1.0 and name in self.attributes:
-            # decompress
             assert isinstance(tensor, (list, tuple))
             values, indices = tensor
+            
             values = values.view(-1)
             indices = indices.view(-1)
             if self.fp16_values and vdtype.is_floating_point:
@@ -196,7 +217,7 @@ class DGCCompressor:
             if self.fp16_values and vdtype.is_floating_point:
                 tensor = tensor.type(vdtype)
             return self.memory.compensate(tensor, name, accumulate=False)
-
+    
     def communicate(self, tensor_compressed, name, op):
         self.op = op
         if self.compress_ratio < 1.0 and name in self.attributes:
