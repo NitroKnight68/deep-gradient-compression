@@ -5,9 +5,9 @@ from torchpack.mtpack.utils.config import Config, configs
 
 # dataset
 configs.dataset = Config(ImageNet)
-configs.dataset.root = '/dataset/imagenet'
-configs.dataset.num_classes = 1000
-configs.dataset.image_size = 224
+configs.dataset.root = '/data/imagenet'
+configs.dataset.num_classes = 200
+configs.dataset.image_size = 64
 
 # training
 configs.train.num_epochs = 90

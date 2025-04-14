@@ -18,6 +18,7 @@ class DGCCompressor:
     def __init__(self, compress_ratio, memory=None,
                  sample_ratio=0.01, strided_sample=True,
                  compress_upper_bound=1.3, compress_lower_bound=0.8, max_adaptation_iters=10, resample=True,
+                 compression_numerator = 0, compression_denominator = 0,
                  fp16_values=False, int32_indices=False,
                  warmup_epochs=-1, warmup_coeff=None):
         self.world_size = hvd.size()
@@ -57,7 +58,7 @@ class DGCCompressor:
 
     def initialize(self, named_parameters):
         if hvd.rank() == 0:
-            print("=> Initializing DGC compressor")
+            print("==> Initializing DGC Compressor")
         for name, param in named_parameters:
             if torch.is_tensor(param):
                 numel = param.numel()
@@ -69,8 +70,8 @@ class DGCCompressor:
                 pct_numel = int(math.ceil(numel * self.sample_ratio))
                 cpr_numel = int(math.ceil(2 / self.compress_ratio))
                 if numel <= cpr_numel:
-                    if hvd.rank() == 0:
-                        print(f'Warning: {name} with {numel} elements transmits 1 gradient element')
+                    # if hvd.rank() == 0:
+                    #     print(f'Warning: {name} with {numel} elements transmits 1 gradient element')
                     sample_stride = 1
                     num_samples = numel
                 else:
@@ -85,10 +86,10 @@ class DGCCompressor:
             top_k_samples = int(math.ceil(num_samples * self.compress_ratio))
             num_selects = int(math.ceil(numel * self.compress_ratio))
             self.attributes[name] = (numel, shape, num_selects, num_samples, top_k_samples, sample_stride)
-            if hvd.rank() == 0:
-                print(f'   {name:<25}: transmit {num_selects} / {numel} elements of shape {shape}\n'
-                      f'   {" " * 25}  threshold {top_k_samples} / {num_samples} samples'
-                      f' {f"at stride {sample_stride}" if self.strided_sample else "uniformly"}')
+            # if hvd.rank() == 0:
+            #     print(f'   {name:<25}: transmit {num_selects} / {numel} elements of shape {shape}\n'
+            #           f'   {" " * 25}  threshold {top_k_samples} / {num_samples} samples'
+            #           f' {f"at stride {sample_stride}" if self.strided_sample else "uniformly"}')
     
     def warmup_compress_ratio(self, epoch):
         if self.warmup_epochs > 0:
@@ -103,8 +104,8 @@ class DGCCompressor:
         else:
             compress_ratio = self.base_compress_ratio
         if compress_ratio != self.compress_ratio:
-            if hvd.rank() == 0:
-                print(f'Update compress ratio: {compress_ratio}')
+            # if hvd.rank() == 0:
+            #     print(f'Update compress ratio: {compress_ratio}')
             self.compress_ratio = compress_ratio
             self.initialize(self.attributes.items())
 
@@ -169,15 +170,15 @@ class DGCCompressor:
 
             # Print compression info
             compressed_size = values.numel() + indices.numel()
-            print(f'[DGC Compress] Layer: {name}')
-            print(f'  Original tensor: {original_numel} elements, shape: {tensor.shape}')
-            print(f'  Compressed: {compressed_size} elements '
-                f'(values: {values.numel()}, indices: {indices.numel()})')
-            print(f'  Compression ratio: {compressed_size/original_numel:.4f}')
+            # print(f'[DGC Compress] Layer: {name}')
+            # print(f'  Original tensor: {original_numel} elements, shape: {tensor.shape}')
+            # print(f'  Compressed: {compressed_size} elements '
+            #     f'(values: {values.numel()}, indices: {indices.numel()})')
+            # print(f'  Compression ratio: {compressed_size/original_numel:.4f}')
             
             self.compression_numerator += compressed_size
             self.compression_denominator += original_numel
-            print(f'>>>>>>>>>>>>>>>>>>>>{self.compression_numerator / self.compression_denominator}<<<<<<<<<<<<<<<')
+            # print(f'>>>{self.compression_numerator / self.compression_denominator}')
 
             ctx = (name, numel, shape, values.dtype, indices.dtype,
                 tensor.data.view(numel))
@@ -188,10 +189,10 @@ class DGCCompressor:
             return (values, indices), ctx
         else:
             # Not compressing
-            print(f'[DGC Compress] Layer: {name} not compressed (ratio = 1.0 or not in attributes)')
+            # print(f'[DGC Compress] Layer: {name} not compressed (ratio = 1.0 or not in attributes)')
             self.compression_numerator += original_numel
             self.compression_denominator += original_numel
-            print(f'>>>>>>>>>>>>>>>>>>>>{self.compression_numerator / self.compression_denominator}<<<<<<<<<<<<<<<')
+            # print(f'>>>{self.compression_numerator / self.compression_denominator}')
             ctx = (name, None, None, tensor.dtype, None, None)
             if self.fp16_values and tensor.dtype.is_floating_point:
                 tensor = tensor.type(torch.float16)

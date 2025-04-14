@@ -42,7 +42,7 @@ class DGCSGDMemory(Memory):
     
     def initialize(self, named_parameters):
         if hvd.rank() == 0:
-            print("=> Initializing DGC SGD memory")
+            print("==> Initializing DGC SGD memory")
         for name, param in named_parameters:
             self.momentums[name] = torch.zeros_like(param.data)
             self.velocities[name] = torch.zeros_like(param.data)

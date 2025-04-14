@@ -3,6 +3,7 @@ import math
 import os
 import random
 import shutil
+import time
 
 import numpy as np
 import horovod.torch as hvd
@@ -30,7 +31,7 @@ def main():
     # Update configs #
     ##################
 
-    printr(f'==> loading configs from {args.configs}')
+    printr(f'==> Loading Configs from {args.configs}\n')
     Config.update_from_modules(*args.configs)
     Config.update_from_arguments(*opts)
 
@@ -77,7 +78,7 @@ def main():
     # Initialize DataLoaders, Model, Criterion, LRScheduler & Optimizer #
     #####################################################################
 
-    printr(f'\n==> creating dataset "{configs.dataset}"')
+    printr(f'\n==> Creating Dataset {configs.dataset}')
     dataset = configs.dataset()
     # Horovod: limit # of CPU threads to be used per worker.
     torch.set_num_threads(configs.data.num_threads_per_worker)
@@ -91,7 +92,7 @@ def main():
             mp._supports_context and
             'forkserver' in mp.get_all_start_methods()):
         loader_kwargs['multiprocessing_context'] = 'forkserver'
-    printr(f'\n==> loading dataset "{loader_kwargs}""')
+    printr(f'\n==> Loading Dataset {loader_kwargs}')
     samplers, loaders = {}, {}
     for split in dataset:
         # Horovod: use DistributedSampler to partition data among workers.
@@ -107,7 +108,7 @@ def main():
             **loader_kwargs
         )
 
-    printr(f'\n==> creating model "{configs.model}"')
+    printr(f'\n==> Creating Model {configs.model}')
     model = configs.model()
     model = model.cuda()
 
@@ -116,7 +117,7 @@ def main():
     configs.train.base_lr = configs.train.optimizer.lr
     configs.train.optimizer.lr *= (configs.train.num_batches_per_step
                                    * hvd.size())
-    printr(f'\n==> creating optimizer "{configs.train.optimizer}"')
+    printr(f'\n==> Creating Optimizer {configs.train.optimizer}')
 
     if configs.train.optimize_bn_separately:
         optimizer = configs.train.optimizer([
@@ -127,9 +128,9 @@ def main():
         optimizer = configs.train.optimizer(model.parameters())
 
     # Horovod: (optional) compression algorithm.
-    printr(f'\n==> creating compression "{configs.train.compression}"')
+    printr(f'\n==> Creating Compression {configs.train.compression}')
     if configs.train.dgc:
-        printr(f'\n==> initializing dgc compression')
+        printr(f'\n==> Initializing DGC Compression')
         configs.train.compression.memory = configs.train.compression.memory()
         compression = configs.train.compression()
         compression.memory.initialize(model.named_parameters())
@@ -151,26 +152,27 @@ def main():
 
     # resume from checkpoint
     last_epoch, best_metric = -1, None
-    if os.path.exists(configs.train.latest_pth_path):
-        printr(f'\n[resume_path] = {configs.train.latest_pth_path}')
-        checkpoint = torch.load(configs.train.latest_pth_path)
-        if 'model' in checkpoint:
-            model.load_state_dict(checkpoint.pop('model'))
-        if 'optimizer' in checkpoint:
-            optimizer.load_state_dict(checkpoint.pop('optimizer'))
-        if configs.train.dgc and 'compression' in checkpoint:
-            compression.memory.load_state_dict(checkpoint.pop('compression'))
-        last_epoch = checkpoint.get('epoch', last_epoch)
-        best_metric = checkpoint.get('meters', {}).get(
-            f'{configs.train.metric}_best', best_metric)
-        # Horovod: broadcast parameters.
-        hvd.broadcast_parameters(model.state_dict(), root_rank=0)
-    else:
-        printr('\n==> train from scratch')
-        # Horovod: broadcast parameters & optimizer state.
-        printr('\n==> broadcasting paramters and optimizer state')
-        hvd.broadcast_parameters(model.state_dict(), root_rank=0)
-        hvd.broadcast_optimizer_state(optimizer, root_rank=0)
+    # if os.path.exists(configs.train.latest_pth_path):
+    #     printr(f'\n[resume_path] = {configs.train.latest_pth_path}')
+    #     checkpoint = torch.load(configs.train.latest_pth_path)
+    #     if 'model' in checkpoint:
+    #         model.load_state_dict(checkpoint.pop('model'))
+    #     if 'optimizer' in checkpoint:
+    #         optimizer.load_state_dict(checkpoint.pop('optimizer'))
+    #     if configs.train.dgc and 'compression' in checkpoint:
+    #         compression.memory.load_state_dict(checkpoint.pop('compression'))
+    #     last_epoch = checkpoint.get('epoch', last_epoch)
+    #     best_metric = checkpoint.get('meters', {}).get(
+    #         f'{configs.train.metric}_best', best_metric)
+    #     # Horovod: broadcast parameters.
+    #     hvd.broadcast_parameters(model.state_dict(), root_rank=0)
+    # else:
+    printr('\n==> Train from Scratch')
+    # Horovod: broadcast parameters & optimizer state.
+    printr('\n==> Broadcasting Parameters and Optimizer State')
+    hvd.broadcast_parameters(model.state_dict(), root_rank=0)
+    hvd.broadcast_optimizer_state(optimizer, root_rank=0)
+        
 
     num_steps_per_epoch = len(loaders['train'])
     if 'scheduler' in configs.train and configs.train.scheduler is not None:
@@ -201,7 +203,7 @@ def main():
         writer = None
 
     for current_epoch in range(last_epoch + 1, configs.train.num_epochs):
-        printr(f'\n==> training epoch {current_epoch}'
+        printr(f'\n==> Training Epoch {current_epoch}'
                 f'/{configs.train.num_epochs}')
 
         if configs.train.dgc:
@@ -240,6 +242,12 @@ def main():
             for k, meter in meters.items():
                 print(f'[{k}] = {meter:2f}')
                 writer.add_scalar(k, meter, num_inputs)
+            if(compression.compression_denominator != 0):
+                print(f'[compression_ratio] = {(compression.compression_numerator / compression.compression_denominator):2f}')
+            else:
+                print(f'[compression_numerator] = {compression.compression_numerator}')
+                print(f'[compression_denominator] = {compression.compression_denominator}')
+                
 
         checkpoint = {
             'epoch': current_epoch,
@@ -410,4 +418,7 @@ def printr(*args, **kwargs):
 
 if __name__ == '__main__':
     hvd.init()
+    start_time = time.time()
     main()
+    end_time = time.time()
+    print(f"==> Executed in {(end_time - start_time):.2f} seconds")
