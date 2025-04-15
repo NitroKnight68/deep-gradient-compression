@@ -245,8 +245,8 @@ def main():
             if(compression.compression_denominator != 0):
                 print(f'[compression_ratio] = {(compression.compression_numerator / compression.compression_denominator):2f}')
             else:
-                print(f'[compression_numerator] = {compression.compression_numerator}')
-                print(f'[compression_denominator] = {compression.compression_denominator}')
+                print(f'[compression_ratio] = 1')
+            
                 
 
         checkpoint = {
@@ -280,6 +280,8 @@ def train(model, loader, device, epoch, sampler, criterion, optimizer,
 
     sampler.set_epoch(epoch)
     model.train()
+    global_training_loss = 0.0
+
     for step, (inputs, targets) in enumerate(tqdm(
             loader, desc='train', ncols=0, disable=quiet)):
         adjust_learning_rate(scheduler, epoch=epoch, step=step,
@@ -304,9 +306,15 @@ def train(model, loader, device, epoch, sampler, criterion, optimizer,
 
         # write train loss log
         loss = hvd.allreduce(loss, name='loss').item()
+        global_training_loss += loss
+
         if writer is not None:
             num_inputs += step_size * hvd.size()
             writer.add_scalar('loss/train', loss, num_inputs)
+
+    global_training_loss /= num_steps_per_epoch
+    if hvd.rank() == 0:
+        print(f'\n[training_loss] = {global_training_loss:.4f}')
 
 
 def evaluate(model, loader, device, meters, split='test', quiet=True):
