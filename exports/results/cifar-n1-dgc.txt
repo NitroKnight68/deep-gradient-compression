@@ -1,0 +1,1154 @@
+==> Loading Configs from ['configs/cifar/resnet110.py', 'configs/dgc/wm5.py', 'configs/dgc/fp16.py', 'configs/dgc/int32.py']
+
+[train.save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1
+[seed] = 42
+[data]
+  [num_threads_per_worker] = 4
+[train]
+  [dgc] = True
+  [compression]
+    [func] = <class 'dgc.compression.DGCCompressor'>
+    [compress_ratio] = 0.001
+    [sample_ratio] = 0.01
+    [strided_sample] = True
+    [compress_upper_bound] = 1.3
+    [compress_lower_bound] = 0.8
+    [max_adaptation_iters] = 10
+    [resample] = True
+    [memory]
+      [func] = <class 'dgc.memory.DGCSGDMemory'>
+      [momentum] = 0.9
+    [warmup_epochs] = 5
+    [fp16_values] = True
+    [int32_indices] = True
+  [criterion]
+    [func] = <class 'torch.nn.modules.loss.CrossEntropyLoss'>
+  [optimizer]
+    [func] = <class 'dgc.optim.sgd.DGCSGD'>
+    [momentum] = 0.9
+    [lr] = 0.1
+    [weight_decay] = 0.0001
+  [schedule_lr_per_epoch] = True
+  [warmup_lr_epochs] = 5
+  [metric] = acc/test_top1
+  [meters]
+    [acc/{}_top1]
+      [func] = <class 'torchpack.mtpack.meters.class_meter.TopKClassMeter'>
+      [k] = 1
+    [acc/{}_top5]
+      [func] = <class 'torchpack.mtpack.meters.class_meter.TopKClassMeter'>
+      [k] = 5
+  [num_epochs] = 100
+  [batch_size] = 128
+  [scheduler]
+    [func] = <class 'torch.optim.lr_scheduler.CosineAnnealingLR'>
+    [T_max] = 95
+  [optimize_bn_separately] = 1
+  [num_batches_per_step] = 1
+  [save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1
+  [checkpoint_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e{epoch}-r0.pth
+  [latest_pth_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/latest-r0.pth
+  [best_pth_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/best-r0.pth
+[dataset]
+  [func] = <class 'torchpack.mtpack.datasets.vision.cifar.CIFAR'>
+  [root] = ./data/cifar10
+  [num_classes] = 10
+  [image_size] = 32
+[model]
+  [func] = <function resnet110 at 0x7f073bfe2290>
+  [num_classes] = 10
+[device] = cuda
+
+==> Creating Dataset [func] = <class 'torchpack.mtpack.datasets.vision.cifar.CIFAR'>
+[root] = ./data/cifar10
+[num_classes] = 10
+[image_size] = 32
+Files already downloaded and verified
+Files already downloaded and verified
+
+==> Loading Dataset {'num_workers': 4, 'pin_memory': True}
+
+==> Creating Model [func] = <function resnet110 at 0x7f073bfe2290>
+[num_classes] = 10
+
+==> Creating Optimizer [func] = <class 'dgc.optim.sgd.DGCSGD'>
+[momentum] = 0.9
+[lr] = 0.1
+[weight_decay] = 0.0001
+
+==> Creating Compression [func] = <class 'dgc.compression.DGCCompressor'>
+[compress_ratio] = 0.001
+[sample_ratio] = 0.01
+[strided_sample] = True
+[compress_upper_bound] = 1.3
+[compress_lower_bound] = 0.8
+[max_adaptation_iters] = 10
+[resample] = True
+[memory]
+  [func] = <class 'dgc.memory.DGCSGDMemory'>
+  [momentum] = 0.9
+[warmup_epochs] = 5
+[fp16_values] = True
+[int32_indices] = True
+
+==> Initializing DGC Compression
+==> Initializing DGC SGD memory
+==> Initializing DGC Compressor
+
+==> Train from Scratch
+
+==> Broadcasting Parameters and Optimizer State
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Bootstrap : Using eth0:172.22.97.185<0>
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO cudaDriverVersion 12060
+NCCL version 2.15.1+cuda10.2
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO NET/IB : No device found.
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO NET/Socket : Using [0]eth0:172.22.97.185<0>
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Using network Socket
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 00/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 01/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 02/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 03/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 04/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 05/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 06/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 07/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 08/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 09/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 10/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 11/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 12/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 13/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 14/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 15/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 16/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 17/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 18/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 19/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 20/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 21/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 22/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 23/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 24/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 25/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 26/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 27/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 28/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 29/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 30/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Channel 31/32 :    0
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Trees [0] -1/-1/-1->0->-1 [1] -1/-1/-1->0->-1 [2] -1/-1/-1->0->-1 [3] -1/-1/-1->0->-1 [4] -1/-1/-1->0->-1 [5] -1/-1/-1->0->-1 [6] -1/-1/-1->0->-1 [7] -1/-1/-1->0->-1 [8] -1/-1/-1->0->-1 [9] -1/-1/-1->0->-1 [10] -1/-1/-1->0->-1 [11] -1/-1/-1->0->-1 [12] -1/-1/-1->0->-1 [13] -1/-1/-1->0->-1 [14] -1/-1/-1->0->-1 [15] -1/-1/-1->0->-1 [16] -1/-1/-1->0->-1 [17] -1/-1/-1->0->-1 [18] -1/-1/-1->0->-1 [19] -1/-1/-1->0->-1 [20] -1/-1/-1->0->-1 [21] -1/-1/-1->0->-1 [22] -1/-1/-1->0->-1 [23] -1/-1/-1->0->-1 [24] -1/-1/-1->0->-1 [25] -1/-1/-1->0->-1 [26] -1/-1/-1->0->-1 [27] -1/-1/-1->0->-1 [28] -1/-1/-1->0->-1 [29] -1/-1/-1->0->-1 [30] -1/-1/-1->0->-1 [31] -1/-1/-1->0->-1
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Connected all rings
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO Connected all trees
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO 32 coll channels, 32 p2p channels, 32 p2p channels per peer
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO comm 0x7f0763fea580 rank 0 nranks 1 cudaDev 0 busId 1000 - Init COMPLETE
+[acc/test_top1] = 10.000000
+[acc/test_top5] = 50.000000
+
+==> Training Epoch 0/100
+==> Initializing DGC Compressor
+
+[training_loss] = 2.0883
+
+[acc/test_top1] = 33.190000
+[acc/test_top5] = 89.430000
+[acc/test_top1_best] = 33.190000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e0-r0.pth
+
+==> Training Epoch 1/100
+==> Initializing DGC Compressor
+
+[training_loss] = 1.5431
+
+[acc/test_top1] = 49.280000
+[acc/test_top5] = 93.860000
+[acc/test_top1_best] = 49.280000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e1-r0.pth
+
+==> Training Epoch 2/100
+==> Initializing DGC Compressor
+
+[training_loss] = 1.3294
+
+[acc/test_top1] = 54.680000
+[acc/test_top5] = 95.160000
+[acc/test_top1_best] = 54.680000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e2-r0.pth
+
+==> Training Epoch 3/100
+==> Initializing DGC Compressor
+
+[training_loss] = 1.1552
+
+[acc/test_top1] = 51.260000
+[acc/test_top5] = 94.790000
+[acc/test_top1_best] = 54.680000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e3-r0.pth
+
+==> Training Epoch 4/100
+==> Initializing DGC Compressor
+
+[training_loss] = 1.0229
+
+[acc/test_top1] = 63.050000
+[acc/test_top5] = 96.820000
+[acc/test_top1_best] = 63.050000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e4-r0.pth
+
+==> Training Epoch 5/100
+==> Initializing DGC Compressor
+
+[training_loss] = 0.9100
+
+[acc/test_top1] = 58.230000
+[acc/test_top5] = 95.740000
+[acc/test_top1_best] = 63.050000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e5-r0.pth
+
+==> Training Epoch 6/100
+
+[training_loss] = 0.8101
+
+[acc/test_top1] = 63.140000
+[acc/test_top5] = 95.100000
+[acc/test_top1_best] = 63.140000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e6-r0.pth
+
+==> Training Epoch 7/100
+
+[training_loss] = 0.7384
+
+[acc/test_top1] = 62.190000
+[acc/test_top5] = 96.820000
+[acc/test_top1_best] = 63.140000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e7-r0.pth
+
+==> Training Epoch 8/100
+
+[training_loss] = 0.6758
+
+[acc/test_top1] = 57.340000
+[acc/test_top5] = 95.940000
+[acc/test_top1_best] = 63.140000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e8-r0.pth
+
+==> Training Epoch 9/100
+
+[training_loss] = 0.6326
+
+[acc/test_top1] = 67.050000
+[acc/test_top5] = 97.180000
+[acc/test_top1_best] = 67.050000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e9-r0.pth
+
+==> Training Epoch 10/100
+
+[training_loss] = 0.5925
+
+[acc/test_top1] = 77.620000
+[acc/test_top5] = 98.760000
+[acc/test_top1_best] = 77.620000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e10-r0.pth
+
+==> Training Epoch 11/100
+
+[training_loss] = 0.5581
+
+[acc/test_top1] = 74.280000
+[acc/test_top5] = 98.070000
+[acc/test_top1_best] = 77.620000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e11-r0.pth
+
+==> Training Epoch 12/100
+
+[training_loss] = 0.5296
+
+[acc/test_top1] = 70.500000
+[acc/test_top5] = 98.680000
+[acc/test_top1_best] = 77.620000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e12-r0.pth
+
+==> Training Epoch 13/100
+
+[training_loss] = 0.5037
+
+[acc/test_top1] = 76.170000
+[acc/test_top5] = 98.450000
+[acc/test_top1_best] = 77.620000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e13-r0.pth
+
+==> Training Epoch 14/100
+
+[training_loss] = 0.4816
+
+[acc/test_top1] = 76.540000
+[acc/test_top5] = 98.370000
+[acc/test_top1_best] = 77.620000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e14-r0.pth
+
+==> Training Epoch 15/100
+
+[training_loss] = 0.4654
+
+[acc/test_top1] = 83.120000
+[acc/test_top5] = 99.330000
+[acc/test_top1_best] = 83.120000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e15-r0.pth
+
+==> Training Epoch 16/100
+
+[training_loss] = 0.4482
+
+[acc/test_top1] = 81.180000
+[acc/test_top5] = 98.940000
+[acc/test_top1_best] = 83.120000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e16-r0.pth
+
+==> Training Epoch 17/100
+
+[training_loss] = 0.4303
+
+[acc/test_top1] = 74.420000
+[acc/test_top5] = 98.510000
+[acc/test_top1_best] = 83.120000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e17-r0.pth
+
+==> Training Epoch 18/100
+
+[training_loss] = 0.4133
+
+[acc/test_top1] = 77.860000
+[acc/test_top5] = 99.050000
+[acc/test_top1_best] = 83.120000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e18-r0.pth
+
+==> Training Epoch 19/100
+
+[training_loss] = 0.4029
+
+[acc/test_top1] = 80.460000
+[acc/test_top5] = 99.070000
+[acc/test_top1_best] = 83.120000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e19-r0.pth
+
+==> Training Epoch 20/100
+
+[training_loss] = 0.3880
+
+[acc/test_top1] = 76.990000
+[acc/test_top5] = 98.280000
+[acc/test_top1_best] = 83.120000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e20-r0.pth
+
+==> Training Epoch 21/100
+
+[training_loss] = 0.3742
+
+[acc/test_top1] = 81.060000
+[acc/test_top5] = 99.150000
+[acc/test_top1_best] = 83.120000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e21-r0.pth
+
+==> Training Epoch 22/100
+
+[training_loss] = 0.3642
+
+[acc/test_top1] = 81.510000
+[acc/test_top5] = 98.910000
+[acc/test_top1_best] = 83.120000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e22-r0.pth
+
+==> Training Epoch 23/100
+
+[training_loss] = 0.3469
+
+[acc/test_top1] = 81.240000
+[acc/test_top5] = 98.920000
+[acc/test_top1_best] = 83.120000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e23-r0.pth
+
+==> Training Epoch 24/100
+
+[training_loss] = 0.3419
+
+[acc/test_top1] = 84.660000
+[acc/test_top5] = 99.470000
+[acc/test_top1_best] = 84.660000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e24-r0.pth
+
+==> Training Epoch 25/100
+
+[training_loss] = 0.3296
+
+[acc/test_top1] = 81.530000
+[acc/test_top5] = 99.340000
+[acc/test_top1_best] = 84.660000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e25-r0.pth
+
+==> Training Epoch 26/100
+
+[training_loss] = 0.3175
+
+[acc/test_top1] = 83.810000
+[acc/test_top5] = 99.310000
+[acc/test_top1_best] = 84.660000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e26-r0.pth
+
+==> Training Epoch 27/100
+
+[training_loss] = 0.3110
+
+[acc/test_top1] = 79.770000
+[acc/test_top5] = 98.900000
+[acc/test_top1_best] = 84.660000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e27-r0.pth
+
+==> Training Epoch 28/100
+
+[training_loss] = 0.3025
+
+[acc/test_top1] = 85.210000
+[acc/test_top5] = 99.510000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e28-r0.pth
+
+==> Training Epoch 29/100
+
+[training_loss] = 0.2946
+
+[acc/test_top1] = 84.060000
+[acc/test_top5] = 99.380000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e29-r0.pth
+
+==> Training Epoch 30/100
+
+[training_loss] = 0.2873
+
+[acc/test_top1] = 83.320000
+[acc/test_top5] = 99.300000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e30-r0.pth
+
+==> Training Epoch 31/100
+
+[training_loss] = 0.2793
+
+[acc/test_top1] = 83.010000
+[acc/test_top5] = 99.310000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e31-r0.pth
+
+==> Training Epoch 32/100
+
+[training_loss] = 0.2684
+
+[acc/test_top1] = 81.800000
+[acc/test_top5] = 98.720000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e32-r0.pth
+
+==> Training Epoch 33/100
+
+[training_loss] = 0.2597
+
+[acc/test_top1] = 83.860000
+[acc/test_top5] = 98.950000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e33-r0.pth
+
+==> Training Epoch 34/100
+
+[training_loss] = 0.2552
+
+[acc/test_top1] = 83.760000
+[acc/test_top5] = 99.440000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e34-r0.pth
+
+==> Training Epoch 35/100
+
+[training_loss] = 0.2479
+
+[acc/test_top1] = 82.470000
+[acc/test_top5] = 99.230000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e35-r0.pth
+
+==> Training Epoch 36/100
+
+[training_loss] = 0.2375
+
+[acc/test_top1] = 84.360000
+[acc/test_top5] = 99.560000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e36-r0.pth
+
+==> Training Epoch 37/100
+
+[training_loss] = 0.2316
+
+[acc/test_top1] = 80.810000
+[acc/test_top5] = 99.330000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e37-r0.pth
+
+==> Training Epoch 38/100
+
+[training_loss] = 0.2232
+
+[acc/test_top1] = 82.460000
+[acc/test_top5] = 99.240000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e38-r0.pth
+
+==> Training Epoch 39/100
+
+[training_loss] = 0.2200
+
+[acc/test_top1] = 80.000000
+[acc/test_top5] = 99.310000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e39-r0.pth
+
+==> Training Epoch 40/100
+
+[training_loss] = 0.2128
+
+[acc/test_top1] = 84.520000
+[acc/test_top5] = 99.240000
+[acc/test_top1_best] = 85.210000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e40-r0.pth
+
+==> Training Epoch 41/100
+
+[training_loss] = 0.2053
+
+[acc/test_top1] = 86.600000
+[acc/test_top5] = 99.510000
+[acc/test_top1_best] = 86.600000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e41-r0.pth
+
+==> Training Epoch 42/100
+
+[training_loss] = 0.1996
+
+[acc/test_top1] = 86.710000
+[acc/test_top5] = 99.650000
+[acc/test_top1_best] = 86.710000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e42-r0.pth
+
+==> Training Epoch 43/100
+
+[training_loss] = 0.1943
+
+[acc/test_top1] = 86.570000
+[acc/test_top5] = 99.460000
+[acc/test_top1_best] = 86.710000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e43-r0.pth
+
+==> Training Epoch 44/100
+
+[training_loss] = 0.1886
+
+[acc/test_top1] = 82.920000
+[acc/test_top5] = 98.950000
+[acc/test_top1_best] = 86.710000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e44-r0.pth
+
+==> Training Epoch 45/100
+
+[training_loss] = 0.1803
+
+[acc/test_top1] = 85.050000
+[acc/test_top5] = 99.380000
+[acc/test_top1_best] = 86.710000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e45-r0.pth
+
+==> Training Epoch 46/100
+
+[training_loss] = 0.1776
+
+[acc/test_top1] = 84.340000
+[acc/test_top5] = 99.440000
+[acc/test_top1_best] = 86.710000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e46-r0.pth
+
+==> Training Epoch 47/100
+
+[training_loss] = 0.1686
+
+[acc/test_top1] = 86.210000
+[acc/test_top5] = 99.430000
+[acc/test_top1_best] = 86.710000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e47-r0.pth
+
+==> Training Epoch 48/100
+
+[training_loss] = 0.1612
+
+[acc/test_top1] = 86.990000
+[acc/test_top5] = 99.560000
+[acc/test_top1_best] = 86.990000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e48-r0.pth
+
+==> Training Epoch 49/100
+
+[training_loss] = 0.1559
+
+[acc/test_top1] = 85.090000
+[acc/test_top5] = 99.500000
+[acc/test_top1_best] = 86.990000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e49-r0.pth
+
+==> Training Epoch 50/100
+
+[training_loss] = 0.1516
+
+[acc/test_top1] = 86.900000
+[acc/test_top5] = 99.510000
+[acc/test_top1_best] = 86.990000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e50-r0.pth
+
+==> Training Epoch 51/100
+
+[training_loss] = 0.1418
+
+[acc/test_top1] = 88.400000
+[acc/test_top5] = 99.560000
+[acc/test_top1_best] = 88.400000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e51-r0.pth
+
+==> Training Epoch 52/100
+
+[training_loss] = 0.1351
+
+[acc/test_top1] = 86.400000
+[acc/test_top5] = 99.180000
+[acc/test_top1_best] = 88.400000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e52-r0.pth
+
+==> Training Epoch 53/100
+
+[training_loss] = 0.1343
+
+[acc/test_top1] = 84.750000
+[acc/test_top5] = 99.160000
+[acc/test_top1_best] = 88.400000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e53-r0.pth
+
+==> Training Epoch 54/100
+
+[training_loss] = 0.1286
+
+[acc/test_top1] = 84.300000
+[acc/test_top5] = 99.220000
+[acc/test_top1_best] = 88.400000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e54-r0.pth
+
+==> Training Epoch 55/100
+
+[training_loss] = 0.1262
+
+[acc/test_top1] = 88.220000
+[acc/test_top5] = 99.550000
+[acc/test_top1_best] = 88.400000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e55-r0.pth
+
+==> Training Epoch 56/100
+
+[training_loss] = 0.1099
+
+[acc/test_top1] = 85.650000
+[acc/test_top5] = 99.360000
+[acc/test_top1_best] = 88.400000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e56-r0.pth
+
+==> Training Epoch 57/100
+
+[training_loss] = 0.1070
+
+[acc/test_top1] = 88.850000
+[acc/test_top5] = 99.560000
+[acc/test_top1_best] = 88.850000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e57-r0.pth
+
+==> Training Epoch 58/100
+
+[training_loss] = 0.1065
+
+[acc/test_top1] = 89.350000
+[acc/test_top5] = 99.610000
+[acc/test_top1_best] = 89.350000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e58-r0.pth
+
+==> Training Epoch 59/100
+
+[training_loss] = 0.0950
+
+[acc/test_top1] = 87.010000
+[acc/test_top5] = 99.610000
+[acc/test_top1_best] = 89.350000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e59-r0.pth
+
+==> Training Epoch 60/100
+
+[training_loss] = 0.0930
+
+[acc/test_top1] = 88.760000
+[acc/test_top5] = 99.610000
+[acc/test_top1_best] = 89.350000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e60-r0.pth
+
+==> Training Epoch 61/100
+
+[training_loss] = 0.0813
+
+[acc/test_top1] = 89.030000
+[acc/test_top5] = 99.340000
+[acc/test_top1_best] = 89.350000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e61-r0.pth
+
+==> Training Epoch 62/100
+
+[training_loss] = 0.0819
+
+[acc/test_top1] = 88.020000
+[acc/test_top5] = 99.590000
+[acc/test_top1_best] = 89.350000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e62-r0.pth
+
+==> Training Epoch 63/100
+
+[training_loss] = 0.0777
+
+[acc/test_top1] = 89.280000
+[acc/test_top5] = 99.700000
+[acc/test_top1_best] = 89.350000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e63-r0.pth
+
+==> Training Epoch 64/100
+
+[training_loss] = 0.0671
+
+[acc/test_top1] = 88.710000
+[acc/test_top5] = 99.450000
+[acc/test_top1_best] = 89.350000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e64-r0.pth
+
+==> Training Epoch 65/100
+
+[training_loss] = 0.0605
+
+[acc/test_top1] = 89.050000
+[acc/test_top5] = 99.690000
+[acc/test_top1_best] = 89.350000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e65-r0.pth
+
+==> Training Epoch 66/100
+
+[training_loss] = 0.0554
+
+[acc/test_top1] = 90.420000
+[acc/test_top5] = 99.700000
+[acc/test_top1_best] = 90.420000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e66-r0.pth
+
+==> Training Epoch 67/100
+
+[training_loss] = 0.0518
+
+[acc/test_top1] = 89.340000
+[acc/test_top5] = 99.540000
+[acc/test_top1_best] = 90.420000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e67-r0.pth
+
+==> Training Epoch 68/100
+
+[training_loss] = 0.0481
+
+[acc/test_top1] = 88.720000
+[acc/test_top5] = 99.470000
+[acc/test_top1_best] = 90.420000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e68-r0.pth
+
+==> Training Epoch 69/100
+
+[training_loss] = 0.0461
+
+[acc/test_top1] = 89.080000
+[acc/test_top5] = 99.670000
+[acc/test_top1_best] = 90.420000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e69-r0.pth
+
+==> Training Epoch 70/100
+
+[training_loss] = 0.0386
+
+[acc/test_top1] = 90.050000
+[acc/test_top5] = 99.680000
+[acc/test_top1_best] = 90.420000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e70-r0.pth
+
+==> Training Epoch 71/100
+
+[training_loss] = 0.0361
+
+[acc/test_top1] = 91.060000
+[acc/test_top5] = 99.700000
+[acc/test_top1_best] = 91.060000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e71-r0.pth
+
+==> Training Epoch 72/100
+
+[training_loss] = 0.0286
+
+[acc/test_top1] = 91.310000
+[acc/test_top5] = 99.760000
+[acc/test_top1_best] = 91.310000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e72-r0.pth
+
+==> Training Epoch 73/100
+
+[training_loss] = 0.0270
+
+[acc/test_top1] = 90.470000
+[acc/test_top5] = 99.690000
+[acc/test_top1_best] = 91.310000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e73-r0.pth
+
+==> Training Epoch 74/100
+
+[training_loss] = 0.0255
+
+[acc/test_top1] = 91.190000
+[acc/test_top5] = 99.710000
+[acc/test_top1_best] = 91.310000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e74-r0.pth
+
+==> Training Epoch 75/100
+
+[training_loss] = 0.0222
+
+[acc/test_top1] = 91.130000
+[acc/test_top5] = 99.700000
+[acc/test_top1_best] = 91.310000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e75-r0.pth
+
+==> Training Epoch 76/100
+
+[training_loss] = 0.0187
+
+[acc/test_top1] = 90.930000
+[acc/test_top5] = 99.790000
+[acc/test_top1_best] = 91.310000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e76-r0.pth
+
+==> Training Epoch 77/100
+
+[training_loss] = 0.0148
+
+[acc/test_top1] = 91.510000
+[acc/test_top5] = 99.700000
+[acc/test_top1_best] = 91.510000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e77-r0.pth
+
+==> Training Epoch 78/100
+
+[training_loss] = 0.0134
+
+[acc/test_top1] = 91.850000
+[acc/test_top5] = 99.710000
+[acc/test_top1_best] = 91.850000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e78-r0.pth
+
+==> Training Epoch 79/100
+
+[training_loss] = 0.0121
+
+[acc/test_top1] = 91.930000
+[acc/test_top5] = 99.670000
+[acc/test_top1_best] = 91.930000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e79-r0.pth
+
+==> Training Epoch 80/100
+
+[training_loss] = 0.0103
+
+[acc/test_top1] = 91.880000
+[acc/test_top5] = 99.780000
+[acc/test_top1_best] = 91.930000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e80-r0.pth
+
+==> Training Epoch 81/100
+
+[training_loss] = 0.0111
+
+[acc/test_top1] = 91.910000
+[acc/test_top5] = 99.720000
+[acc/test_top1_best] = 91.930000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e81-r0.pth
+
+==> Training Epoch 82/100
+
+[training_loss] = 0.0080
+
+[acc/test_top1] = 92.290000
+[acc/test_top5] = 99.760000
+[acc/test_top1_best] = 92.290000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e82-r0.pth
+
+==> Training Epoch 83/100
+
+[training_loss] = 0.0072
+
+[acc/test_top1] = 92.450000
+[acc/test_top5] = 99.760000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e83-r0.pth
+
+==> Training Epoch 84/100
+
+[training_loss] = 0.0066
+
+[acc/test_top1] = 92.280000
+[acc/test_top5] = 99.700000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e84-r0.pth
+
+==> Training Epoch 85/100
+
+[training_loss] = 0.0058
+
+[acc/test_top1] = 92.300000
+[acc/test_top5] = 99.720000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e85-r0.pth
+
+==> Training Epoch 86/100
+
+[training_loss] = 0.0060
+
+[acc/test_top1] = 92.380000
+[acc/test_top5] = 99.740000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e86-r0.pth
+
+==> Training Epoch 87/100
+
+[training_loss] = 0.0054
+
+[acc/test_top1] = 92.190000
+[acc/test_top5] = 99.700000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e87-r0.pth
+
+==> Training Epoch 88/100
+
+[training_loss] = 0.0045
+
+[acc/test_top1] = 92.220000
+[acc/test_top5] = 99.730000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e88-r0.pth
+
+==> Training Epoch 89/100
+
+[training_loss] = 0.0046
+
+[acc/test_top1] = 92.280000
+[acc/test_top5] = 99.700000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e89-r0.pth
+
+==> Training Epoch 90/100
+
+[training_loss] = 0.0044
+
+[acc/test_top1] = 92.320000
+[acc/test_top5] = 99.710000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e90-r0.pth
+
+==> Training Epoch 91/100
+
+[training_loss] = 0.0043
+
+[acc/test_top1] = 92.350000
+[acc/test_top5] = 99.710000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e91-r0.pth
+
+==> Training Epoch 92/100
+
+[training_loss] = 0.0040
+
+[acc/test_top1] = 92.220000
+[acc/test_top5] = 99.710000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e92-r0.pth
+
+==> Training Epoch 93/100
+
+[training_loss] = 0.0042
+
+[acc/test_top1] = 92.410000
+[acc/test_top5] = 99.710000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e93-r0.pth
+
+==> Training Epoch 94/100
+
+[training_loss] = 0.0039
+
+[acc/test_top1] = 92.400000
+[acc/test_top5] = 99.720000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e94-r0.pth
+
+==> Training Epoch 95/100
+
+[training_loss] = 0.0038
+
+[acc/test_top1] = 92.450000
+[acc/test_top5] = 99.720000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e95-r0.pth
+
+==> Training Epoch 96/100
+
+[training_loss] = 0.0040
+
+[acc/test_top1] = 92.330000
+[acc/test_top5] = 99.710000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e96-r0.pth
+
+==> Training Epoch 97/100
+
+[training_loss] = 0.0038
+
+[acc/test_top1] = 92.330000
+[acc/test_top5] = 99.710000
+[acc/test_top1_best] = 92.450000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e97-r0.pth
+
+==> Training Epoch 98/100
+
+[training_loss] = 0.0037
+
+[acc/test_top1] = 92.530000
+[acc/test_top5] = 99.710000
+[acc/test_top1_best] = 92.530000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e98-r0.pth
+
+==> Training Epoch 99/100
+
+[training_loss] = 0.0038
+
+[acc/test_top1] = 92.330000
+[acc/test_top5] = 99.730000
+[acc/test_top1_best] = 92.530000
+[compression_ratio] = 1
+[save_path] = runs/[cifar.resnet110+dgc.[wm5+fp16+int32]].np1/checkpoints/e99-r0.pth
+==> Executed in 11347.24 seconds
+LAPTOP-21T9K94A:31203:31217 [0] NCCL INFO comm 0x7f0763fea580 rank 0 nranks 1 cudaDev 0 busId 1000 - Destroy COMPLETE

@@ -1,0 +1,1047 @@
+==> Loading Configs from ['configs/imagenet/resnet50.py', 'configs/dgc/wm0.py']
+
+[train.save_path] = runs/[imagenet.resnet50+dgc.wm0].np1
+[seed] = 42
+[data]
+  [num_threads_per_worker] = 4
+[train]
+  [dgc] = True
+  [compression]
+    [func] = <class 'dgc.compression.DGCCompressor'>
+    [compress_ratio] = 0.001
+    [sample_ratio] = 0.01
+    [strided_sample] = True
+    [compress_upper_bound] = 1.3
+    [compress_lower_bound] = 0.8
+    [max_adaptation_iters] = 10
+    [resample] = True
+    [memory]
+      [func] = <class 'dgc.memory.DGCSGDMemory'>
+      [momentum] = 0.9
+    [warmup_epochs] = 0
+  [criterion]
+    [func] = <class 'torch.nn.modules.loss.CrossEntropyLoss'>
+  [optimizer]
+    [func] = <class 'dgc.optim.sgd.DGCSGD'>
+    [momentum] = 0.9
+    [lr] = 0.0125
+    [weight_decay] = 0.0001
+    [nesterov] = True
+  [schedule_lr_per_epoch] = True
+  [warmup_lr_epochs] = 5
+  [metric] = acc/test_top1
+  [meters]
+    [acc/{}_top1]
+      [func] = <class 'torchpack.mtpack.meters.class_meter.TopKClassMeter'>
+      [k] = 1
+    [acc/{}_top5]
+      [func] = <class 'torchpack.mtpack.meters.class_meter.TopKClassMeter'>
+      [k] = 5
+  [num_epochs] = 90
+  [batch_size] = 32
+  [optimize_bn_separately] = 1
+  [scheduler]
+    [func] = <class 'torch.optim.lr_scheduler.MultiStepLR'>
+    [milestones] = [25, 55, 75]
+    [gamma] = 0.1
+  [num_batches_per_step] = 1
+  [save_path] = runs/[imagenet.resnet50+dgc.wm0].np1
+  [checkpoint_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e{epoch}-r0.pth
+  [latest_pth_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/latest-r0.pth
+  [best_pth_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/best-r0.pth
+[dataset]
+  [func] = <class 'torchpack.mtpack.datasets.vision.imagenet.ImageNet'>
+  [root] = /data/imagenet
+  [num_classes] = 200
+  [image_size] = 64
+[model]
+  [func] = <function resnet50 at 0x7777601be8c0>
+  [num_classes] = 200
+  [zero_init_residual] = True
+[device] = cuda
+
+==> Creating Dataset [func] = <class 'torchpack.mtpack.datasets.vision.imagenet.ImageNet'>
+[root] = /data/imagenet
+[num_classes] = 200
+[image_size] = 64
+
+==> Loading Dataset {'num_workers': 4, 'pin_memory': True}
+
+==> Creating Model [func] = <function resnet50 at 0x7777601be8c0>
+[num_classes] = 200
+[zero_init_residual] = True
+
+==> Creating Optimizer [func] = <class 'dgc.optim.sgd.DGCSGD'>
+[momentum] = 0.9
+[lr] = 0.0125
+[weight_decay] = 0.0001
+[nesterov] = True
+
+==> Creating Compression [func] = <class 'dgc.compression.DGCCompressor'>
+[compress_ratio] = 0.001
+[sample_ratio] = 0.01
+[strided_sample] = True
+[compress_upper_bound] = 1.3
+[compress_lower_bound] = 0.8
+[max_adaptation_iters] = 10
+[resample] = True
+[memory]
+  [func] = <class 'dgc.memory.DGCSGDMemory'>
+  [momentum] = 0.9
+[warmup_epochs] = 0
+
+==> Initializing DGC Compression
+==> Initializing DGC SGD memory
+==> Initializing DGC Compressor
+
+==> Train from Scratch
+
+==> Broadcasting Parameters and Optimizer State
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Bootstrap : Using wlo1:192.168.1.38<0>
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO NET/Plugin : Plugin load returned 2 : libnccl-net.so: cannot open shared object file: No such file or directory.
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO cudaDriverVersion 12020
+NCCL version 2.15.1+cuda10.2
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO NET/IB : No device found.
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO NET/Socket : Using [0]wlo1:192.168.1.38<0> [1]br-3bfa27b326fa:172.19.0.1<0> [2]br-78eaa7bc4f38:172.18.0.1<0> [3]vethf3c9ec6:fe80::fc7b:36ff:feea:ad29%vethf3c9ec6<0> [4]vethe7c3ed2:fe80::f823:bcff:fec4:5c41%vethe7c3ed2<0>
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Using network Socket
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 00/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 01/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 02/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 03/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 04/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 05/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 06/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 07/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 08/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 09/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 10/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 11/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 12/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 13/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 14/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 15/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 16/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 17/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 18/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 19/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 20/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 21/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 22/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 23/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 24/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 25/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 26/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 27/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 28/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 29/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 30/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Channel 31/32 :    0
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Trees [0] -1/-1/-1->0->-1 [1] -1/-1/-1->0->-1 [2] -1/-1/-1->0->-1 [3] -1/-1/-1->0->-1 [4] -1/-1/-1->0->-1 [5] -1/-1/-1->0->-1 [6] -1/-1/-1->0->-1 [7] -1/-1/-1->0->-1 [8] -1/-1/-1->0->-1 [9] -1/-1/-1->0->-1 [10] -1/-1/-1->0->-1 [11] -1/-1/-1->0->-1 [12] -1/-1/-1->0->-1 [13] -1/-1/-1->0->-1 [14] -1/-1/-1->0->-1 [15] -1/-1/-1->0->-1 [16] -1/-1/-1->0->-1 [17] -1/-1/-1->0->-1 [18] -1/-1/-1->0->-1 [19] -1/-1/-1->0->-1 [20] -1/-1/-1->0->-1 [21] -1/-1/-1->0->-1 [22] -1/-1/-1->0->-1 [23] -1/-1/-1->0->-1 [24] -1/-1/-1->0->-1 [25] -1/-1/-1->0->-1 [26] -1/-1/-1->0->-1 [27] -1/-1/-1->0->-1 [28] -1/-1/-1->0->-1 [29] -1/-1/-1->0->-1 [30] -1/-1/-1->0->-1 [31] -1/-1/-1->0->-1
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Connected all rings
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO Connected all trees
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO 32 coll channels, 32 p2p channels, 32 p2p channels per peer
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO comm 0x7777768f8660 rank 0 nranks 1 cudaDev 0 busId 1000 - Init COMPLETE
+[acc/test_top1] = 1.101192
+[acc/test_top5] = 0.000000
+
+==> Training Epoch 0/90
+
+[training_loss] = 4.8988
+
+[acc/test_top1] = 35.237166
+[acc/test_top5] = 82.629689
+[acc/test_top1_best] = 35.237166
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e0-r0.pth
+
+==> Training Epoch 1/90
+
+[training_loss] = 4.8239
+
+[acc/test_top1] = 41.650907
+[acc/test_top5] = 86.798253
+[acc/test_top1_best] = 41.650907
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e1-r0.pth
+
+==> Training Epoch 2/90
+
+[training_loss] = 4.7622
+
+[acc/test_top1] = 50.042102
+[acc/test_top5] = 87.900185
+[acc/test_top1_best] = 50.042102
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e2-r0.pth
+
+==> Training Epoch 3/90
+
+[training_loss] = 4.5900
+
+[acc/test_top1] = 46.470528
+[acc/test_top5] = 87.399783
+[acc/test_top1_best] = 46.470528
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e3-r0.pth
+
+==> Training Epoch 4/90
+
+[training_loss] = 4.5465
+
+[acc/test_top1] = 54.942438
+[acc/test_top5] = 89.226203
+[acc/test_top1_best] = 54.942438
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e4-r0.pth
+
+==> Training Epoch 5/90
+
+[training_loss] = 4.4188
+
+[acc/test_top1] = 51.686116
+[acc/test_top5] = 88.413612
+[acc/test_top1_best] = 51.686116
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e5-r0.pth
+
+==> Training Epoch 6/90
+
+[training_loss] = 4.3184
+
+[acc/test_top1] = 55.436002
+[acc/test_top5] = 87.838251
+[acc/test_top1_best] = 55.436002
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e6-r0.pth
+
+==> Training Epoch 7/90
+
+[training_loss] = 4.2543
+
+[acc/test_top1] = 55.990671
+[acc/test_top5] = 89.183677
+[acc/test_top1_best] = 55.990671
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e7-r0.pth
+
+==> Training Epoch 8/90
+
+[training_loss] = 4.1398
+
+[acc/test_top1] = 48.638129
+[acc/test_top5] = 88.688483
+[acc/test_top1_best] = 48.638129
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e8-r0.pth
+
+==> Training Epoch 9/90
+
+[training_loss] = 4.0638
+
+[acc/test_top1] = 57.699245
+[acc/test_top5] = 89.957692
+[acc/test_top1_best] = 57.699245
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e9-r0.pth
+
+==> Training Epoch 10/90
+
+[training_loss] = 3.9427
+
+[acc/test_top1] = 57.737470
+[acc/test_top5] = 91.286672
+[acc/test_top1_best] = 57.737470
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e10-r0.pth
+
+==> Training Epoch 11/90
+
+[training_loss] = 3.8455
+
+[acc/test_top1] = 54.855840
+[acc/test_top5] = 90.527525
+[acc/test_top1_best] = 54.855840
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e11-r0.pth
+
+==> Training Epoch 12/90
+
+[training_loss] = 3.7981
+
+[acc/test_top1] = 56.808230
+[acc/test_top5] = 91.169059
+[acc/test_top1_best] = 56.808230
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e12-r0.pth
+
+==> Training Epoch 13/90
+
+[training_loss] = 3.7074
+
+[acc/test_top1] = 60.460952
+[acc/test_top5] = 90.524851
+[acc/test_top1_best] = 60.460952
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e13-r0.pth
+
+==> Training Epoch 14/90
+
+[training_loss] = 3.6802
+
+[acc/test_top1] = 57.628678
+[acc/test_top5] = 91.290517
+[acc/test_top1_best] = 57.628678
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e14-r0.pth
+
+==> Training Epoch 15/90
+
+[training_loss] = 3.5754
+
+[acc/test_top1] = 65.482060
+[acc/test_top5] = 91.537461
+[acc/test_top1_best] = 65.482060
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e15-r0.pth
+
+==> Training Epoch 16/90
+
+[training_loss] = 3.5181
+
+[acc/test_top1] = 59.329404
+[acc/test_top5] = 91.367353
+[acc/test_top1_best] = 59.329404
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e16-r0.pth
+
+==> Training Epoch 17/90
+
+[training_loss] = 3.4536
+
+[acc/test_top1] = 55.029407
+[acc/test_top5] = 91.094569
+[acc/test_top1_best] = 55.029407
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e17-r0.pth
+
+==> Training Epoch 18/90
+
+[training_loss] = 3.4426
+
+[acc/test_top1] = 57.405247
+[acc/test_top5] = 91.799204
+[acc/test_top1_best] = 57.405247
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e18-r0.pth
+
+==> Training Epoch 19/90
+
+[training_loss] = 3.4003
+
+[acc/test_top1] = 58.552155
+[acc/test_top5] = 91.419037
+[acc/test_top1_best] = 58.552155
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e19-r0.pth
+
+==> Training Epoch 20/90
+
+[training_loss] = 3.3021
+
+[acc/test_top1] = 59.253540
+[acc/test_top5] = 91.120126
+[acc/test_top1_best] = 59.253540
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e20-r0.pth
+
+==> Training Epoch 21/90
+
+[training_loss] = 3.2362
+
+[acc/test_top1] = 61.612511
+[acc/test_top5] = 91.757710
+[acc/test_top1_best] = 61.612511
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e21-r0.pth
+
+==> Training Epoch 22/90
+
+[training_loss] = 3.2112
+
+[acc/test_top1] = 62.336221
+[acc/test_top5] = 91.543929
+[acc/test_top1_best] = 62.336221
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e22-r0.pth
+
+==> Training Epoch 23/90
+
+[training_loss] = 3.2080
+
+[acc/test_top1] = 62.465976
+[acc/test_top5] = 91.372850
+[acc/test_top1_best] = 62.465976
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e23-r0.pth
+
+==> Training Epoch 24/90
+
+[training_loss] = 3.1713
+
+[acc/test_top1] = 66.641083
+[acc/test_top5] = 91.710338
+[acc/test_top1_best] = 66.641083
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e24-r0.pth
+
+==> Training Epoch 25/90
+
+[training_loss] = 3.1136
+
+[acc/test_top1] = 64.643611
+[acc/test_top5] = 91.824105
+[acc/test_top1_best] = 64.643611
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e25-r0.pth
+
+==> Training Epoch 26/90
+
+[training_loss] = 3.1254
+
+[acc/test_top1] = 63.183979
+[acc/test_top5] = 91.662242
+[acc/test_top1_best] = 63.183979
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e26-r0.pth
+
+==> Training Epoch 27/90
+
+[training_loss] = 3.0553
+
+[acc/test_top1] = 62.891704
+[acc/test_top5] = 91.281830
+[acc/test_top1_best] = 62.891704
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e27-r0.pth
+
+==> Training Epoch 28/90
+
+[training_loss] = 3.0355
+
+[acc/test_top1] = 66.893871
+[acc/test_top5] = 92.352367
+[acc/test_top1_best] = 66.893871
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e28-r0.pth
+
+==> Training Epoch 29/90
+
+[training_loss] = 3.0172
+
+[acc/test_top1] = 67.604620
+[acc/test_top5] = 91.711341
+[acc/test_top1_best] = 67.604620
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e29-r0.pth
+
+==> Training Epoch 30/90
+
+[training_loss] = 2.9902
+
+[acc/test_top1] = 64.349438
+[acc/test_top5] = 91.812389
+[acc/test_top1_best] = 64.349438
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e30-r0.pth
+
+==> Training Epoch 31/90
+
+[training_loss] = 2.5641
+
+[acc/test_top1] = 65.303196
+[acc/test_top5] = 91.408088
+[acc/test_top1_best] = 65.303196
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e31-r0.pth
+
+==> Training Epoch 32/90
+
+[training_loss] = 2.2670
+
+[acc/test_top1] = 62.287835
+[acc/test_top5] = 90.980262
+[acc/test_top1_best] = 62.287835
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e32-r0.pth
+
+==> Training Epoch 33/90
+
+[training_loss] = 2.0631
+
+[acc/test_top1] = 64.239192
+[acc/test_top5] = 91.580265
+[acc/test_top1_best] = 64.239192
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e33-r0.pth
+
+==> Training Epoch 34/90
+
+[training_loss] = 1.9543
+
+[acc/test_top1] = 67.688957
+[acc/test_top5] = 91.709316
+[acc/test_top1_best] = 67.688957
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e34-r0.pth
+
+==> Training Epoch 35/90
+
+[training_loss] = 1.8939
+
+[acc/test_top1] = 62.931686
+[acc/test_top5] = 91.714545
+[acc/test_top1_best] = 62.931686
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e35-r0.pth
+
+==> Training Epoch 36/90
+
+[training_loss] = 1.8607
+
+[acc/test_top1] = 64.847600
+[acc/test_top5] = 91.877384
+[acc/test_top1_best] = 64.847600
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e36-r0.pth
+
+==> Training Epoch 37/90
+
+[training_loss] = 1.8463
+
+[acc/test_top1] = 63.071954
+[acc/test_top5] = 91.328708
+[acc/test_top1_best] = 63.071954
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e37-r0.pth
+
+==> Training Epoch 38/90
+
+[training_loss] = 1.8022
+
+[acc/test_top1] = 64.037648
+[acc/test_top5] = 91.940427
+[acc/test_top1_best] = 64.037648
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e38-r0.pth
+
+==> Training Epoch 39/90
+
+[training_loss] = 1.7899
+
+[acc/test_top1] = 64.778884
+[acc/test_top5] = 91.848956
+[acc/test_top1_best] = 64.778884
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e39-r0.pth
+
+==> Training Epoch 40/90
+
+[training_loss] = 1.7617
+
+[acc/test_top1] = 64.878992
+[acc/test_top5] = 91.626255
+[acc/test_top1_best] = 64.878992
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e40-r0.pth
+
+==> Training Epoch 41/90
+
+[training_loss] = 1.7950
+
+[acc/test_top1] = 67.920231
+[acc/test_top5] = 92.140371
+[acc/test_top1_best] = 67.920231
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e41-r0.pth
+
+==> Training Epoch 42/90
+
+[training_loss] = 1.7808
+
+[acc/test_top1] = 70.257900
+[acc/test_top5] = 92.074990
+[acc/test_top1_best] = 70.257900
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e42-r0.pth
+
+==> Training Epoch 43/90
+
+[training_loss] = 1.7980
+
+[acc/test_top1] = 67.649651
+[acc/test_top5] = 91.709104
+[acc/test_top1_best] = 67.649651
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e43-r0.pth
+
+==> Training Epoch 44/90
+
+[training_loss] = 1.7816
+
+[acc/test_top1] = 62.944111
+[acc/test_top5] = 91.531518
+[acc/test_top1_best] = 62.944111
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e44-r0.pth
+
+==> Training Epoch 45/90
+
+[training_loss] = 1.7572
+
+[acc/test_top1] = 67.274587
+[acc/test_top5] = 91.677956
+[acc/test_top1_best] = 67.274587
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e45-r0.pth
+
+==> Training Epoch 46/90
+
+[training_loss] = 1.7248
+
+[acc/test_top1] = 66.220144
+[acc/test_top5] = 92.186363
+[acc/test_top1_best] = 66.220144
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e46-r0.pth
+
+==> Training Epoch 47/90
+
+[training_loss] = 1.7094
+
+[acc/test_top1] = 69.383806
+[acc/test_top5] = 92.053764
+[acc/test_top1_best] = 69.383806
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e47-r0.pth
+
+==> Training Epoch 48/90
+
+[training_loss] = 1.6952
+
+[acc/test_top1] = 68.588901
+[acc/test_top5] = 91.937345
+[acc/test_top1_best] = 68.588901
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e48-r0.pth
+
+==> Training Epoch 49/90
+
+[training_loss] = 1.6637
+
+[acc/test_top1] = 67.127599
+[acc/test_top5] = 91.582976
+[acc/test_top1_best] = 67.127599
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e49-r0.pth
+
+==> Training Epoch 50/90
+
+[training_loss] = 1.6659
+
+[acc/test_top1] = 69.920218
+[acc/test_top5] = 92.082260
+[acc/test_top1_best] = 69.920218
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e50-r0.pth
+
+==> Training Epoch 51/90
+
+[training_loss] = 1.6701
+
+[acc/test_top1] = 68.198037
+[acc/test_top5] = 92.156569
+[acc/test_top1_best] = 68.198037
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e51-r0.pth
+
+==> Training Epoch 52/90
+
+[training_loss] = 1.6923
+
+[acc/test_top1] = 70.419316
+[acc/test_top5] = 91.703902
+[acc/test_top1_best] = 70.419316
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e52-r0.pth
+
+==> Training Epoch 53/90
+
+[training_loss] = 1.6643
+
+[acc/test_top1] = 66.596442
+[acc/test_top5] = 91.388572
+[acc/test_top1_best] = 66.596442
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e53-r0.pth
+
+==> Training Epoch 54/90
+
+[training_loss] = 1.6493
+
+[acc/test_top1] = 67.897861
+[acc/test_top5] = 91.430831
+[acc/test_top1_best] = 67.897861
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e54-r0.pth
+
+==> Training Epoch 55/90
+
+[training_loss] = 1.6178
+
+[acc/test_top1] = 69.390477
+[acc/test_top5] = 91.857450
+[acc/test_top1_best] = 69.390477
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e55-r0.pth
+
+==> Training Epoch 56/90
+
+[training_loss] = 1.6189
+
+[acc/test_top1] = 67.308498
+[acc/test_top5] = 91.807347
+[acc/test_top1_best] = 67.308498
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e56-r0.pth
+
+==> Training Epoch 57/90
+
+[training_loss] = 1.5950
+
+[acc/test_top1] = 69.035777
+[acc/test_top5] = 91.875326
+[acc/test_top1_best] = 69.035777
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e57-r0.pth
+
+==> Training Epoch 58/90
+
+[training_loss] = 1.5945
+
+[acc/test_top1] = 70.124678
+[acc/test_top5] = 91.962497
+[acc/test_top1_best] = 70.124678
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e58-r0.pth
+
+==> Training Epoch 59/90
+
+[training_loss] = 1.5859
+
+[acc/test_top1] = 69.272710
+[acc/test_top5] = 91.954672
+[acc/test_top1_best] = 69.272710
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e59-r0.pth
+
+==> Training Epoch 60/90
+
+[training_loss] = 1.5820
+
+[acc/test_top1] = 68.990121
+[acc/test_top5] = 91.630428
+[acc/test_top1_best] = 68.990121
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e60-r0.pth
+
+==> Training Epoch 61/90
+
+[training_loss] = 1.2729
+
+[acc/test_top1] = 71.684206
+[acc/test_top5] = 91.785547
+[acc/test_top1_best] = 71.684206
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e61-r0.pth
+
+==> Training Epoch 62/90
+
+[training_loss] = 1.0286
+
+[acc/test_top1] = 69.004217
+[acc/test_top5] = 91.731985
+[acc/test_top1_best] = 69.004217
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e62-r0.pth
+
+==> Training Epoch 63/90
+
+[training_loss] = 0.8608
+
+[acc/test_top1] = 71.646283
+[acc/test_top5] = 91.735998
+[acc/test_top1_best] = 71.646283
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e63-r0.pth
+
+==> Training Epoch 64/90
+
+[training_loss] = 0.7288
+
+[acc/test_top1] = 70.295043
+[acc/test_top5] = 92.210332
+[acc/test_top1_best] = 70.295043
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e64-r0.pth
+
+==> Training Epoch 65/90
+
+[training_loss] = 0.6988
+
+[acc/test_top1] = 69.078186
+[acc/test_top5] = 91.864348
+[acc/test_top1_best] = 69.078186
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e65-r0.pth
+
+==> Training Epoch 66/90
+
+[training_loss] = 0.6841
+
+[acc/test_top1] = 70.596092
+[acc/test_top5] = 91.940666
+[acc/test_top1_best] = 70.596092
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e66-r0.pth
+
+==> Training Epoch 67/90
+
+[training_loss] = 0.6810
+
+[acc/test_top1] = 71.997599
+[acc/test_top5] = 91.892075
+[acc/test_top1_best] = 71.997599
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e67-r0.pth
+
+==> Training Epoch 68/90
+
+[training_loss] = 0.6672
+
+[acc/test_top1] = 68.846899
+[acc/test_top5] = 92.046956
+[acc/test_top1_best] = 68.846899
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e68-r0.pth
+
+==> Training Epoch 69/90
+
+[training_loss] = 0.6537
+
+[acc/test_top1] = 71.463706
+[acc/test_top5] = 92.453101
+[acc/test_top1_best] = 71.463706
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e69-r0.pth
+
+==> Training Epoch 70/90
+
+[training_loss] = 0.6562
+
+[acc/test_top1] = 71.626372
+[acc/test_top5] = 92.025907
+[acc/test_top1_best] = 71.626372
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e70-r0.pth
+
+==> Training Epoch 71/90
+
+[training_loss] = 0.6765
+
+[acc/test_top1] = 69.625371
+[acc/test_top5] = 92.084141
+[acc/test_top1_best] = 69.625371
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e71-r0.pth
+
+==> Training Epoch 72/90
+
+[training_loss] = 0.6597
+
+[acc/test_top1] = 73.217514
+[acc/test_top5] = 92.104554
+[acc/test_top1_best] = 73.217514
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e72-r0.pth
+
+==> Training Epoch 73/90
+
+[training_loss] = 0.6553
+
+[acc/test_top1] = 70.204182
+[acc/test_top5] = 92.080321
+[acc/test_top1_best] = 70.204182
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e73-r0.pth
+
+==> Training Epoch 74/90
+
+[training_loss] = 0.6535
+
+[acc/test_top1] = 71.594348
+[acc/test_top5] = 91.941630
+[acc/test_top1_best] = 71.594348
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e74-r0.pth
+
+==> Training Epoch 75/90
+
+[training_loss] = 0.6534
+
+[acc/test_top1] = 71.421135
+[acc/test_top5] = 92.397450
+[acc/test_top1_best] = 71.421135
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e75-r0.pth
+
+==> Training Epoch 76/90
+
+[training_loss] = 0.6661
+
+[acc/test_top1] = 71.673639
+[acc/test_top5] = 91.929080
+[acc/test_top1_best] = 71.673639
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e76-r0.pth
+
+==> Training Epoch 77/90
+
+[training_loss] = 0.6704
+
+[acc/test_top1] = 70.303209
+[acc/test_top5] = 92.081929
+[acc/test_top1_best] = 70.303209
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e77-r0.pth
+
+==> Training Epoch 78/90
+
+[training_loss] = 0.6497
+
+[acc/test_top1] = 73.017795
+[acc/test_top5] = 91.801611
+[acc/test_top1_best] = 73.017795
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e78-r0.pth
+
+==> Training Epoch 79/90
+
+[training_loss] = 0.6781
+
+[acc/test_top1] = 73.233818
+[acc/test_top5] = 92.375760
+[acc/test_top1_best] = 73.233818
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e79-r0.pth
+
+==> Training Epoch 80/90
+
+[training_loss] = 0.6689
+
+[acc/test_top1] = 74.857351
+[acc/test_top5] = 92.063101
+[acc/test_top1_best] = 74.857351
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e80-r0.pth
+
+==> Training Epoch 81/90
+
+[training_loss] = 0.6248
+
+[acc/test_top1] = 74.930356
+[acc/test_top5] = 91.817910
+[acc/test_top1_best] = 74.930356
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e81-r0.pth
+
+==> Training Epoch 82/90
+
+[training_loss] = 0.6387
+
+[acc/test_top1] = 75.321428
+[acc/test_top5] = 91.914563
+[acc/test_top1_best] = 75.321428
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e82-r0.pth
+
+==> Training Epoch 83/90
+
+[training_loss] = 0.6444
+
+[acc/test_top1] = 75.425520
+[acc/test_top5] = 92.079346
+[acc/test_top1_best] = 75.425520
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e83-r0.pth
+
+==> Training Epoch 84/90
+
+[training_loss] = 0.6439
+
+[acc/test_top1] = 75.182536
+[acc/test_top5] = 92.168555
+[acc/test_top1_best] = 75.182536
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e84-r0.pth
+
+==> Training Epoch 85/90
+
+[training_loss] = 0.6472
+
+[acc/test_top1] = 75.197271
+[acc/test_top5] = 92.340462
+[acc/test_top1_best] = 75.197271
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e85-r0.pth
+
+==> Training Epoch 86/90
+
+[training_loss] = 0.6384
+
+[acc/test_top1] = 75.168961
+[acc/test_top5] = 91.727616
+[acc/test_top1_best] = 75.168961
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e86-r0.pth
+
+==> Training Epoch 87/90
+
+[training_loss] = 0.6572
+
+[acc/test_top1] = 75.037153
+[acc/test_top5] = 91.870786
+[acc/test_top1_best] = 75.037153
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e87-r0.pth
+
+==> Training Epoch 88/90
+
+[training_loss] = 0.6579
+
+[acc/test_top1] = 75.060837
+[acc/test_top5] = 91.991629
+[acc/test_top1_best] = 75.060837
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e88-r0.pth
+
+==> Training Epoch 89/90
+
+[training_loss] = 0.6261
+
+[acc/test_top1] = 75.336537
+[acc/test_top5] = 92.127086
+[acc/test_top1_best] = 75.336537
+[compression_ratio] = 1
+[save_path] = runs/[imagenet.resnet50+dgc.wm0].np1/checkpoints/e89-r0.pth
+==> Executed in 20831.65 seconds
+rithvik-OMEN-by-HP-Gaming-Laptop-16-wd0xxx:5863:5879 [0] NCCL INFO comm 0x7777768f8660 rank 0 nranks 1 cudaDev 0 busId 1000 - Destroy COMPLETE
